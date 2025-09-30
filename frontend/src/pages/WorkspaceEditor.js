@@ -7,21 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSocket } from '../contexts/SocketContext';
 import { useAuth } from '../contexts/AuthContext';
-import { 
-  ArrowLeft,
-  Plus,
-  Play,
-  Save,
-  Lock,
-  Unlock,
-  Users,
-  FileText,
-  Terminal,
-  Copy,
-  Check,
-  Trash2,
-  Settings
-} from 'lucide-react';
+import { ArrowLeft, Plus, Play, Save, Lock, Clock as Unlock, Users, FileText, Terminal, Copy, Check, Trash2, Settings } from 'lucide-react';
 import CodeEditor from '../components/CodeEditor';
 import LoadingSpinner from '../components/LoadingSpinner';
 import workspaceService from '../services/workspaceService';
