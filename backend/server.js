@@ -21,6 +21,7 @@ const workspaceRoutes = require('./routes/workspaces');
 const authMiddleware = require('./middleware/auth');
 
 const app = express();
+app.set('trust proxy', 1); // or true
 const server = http.createServer(app);
 
 // Socket.IO setup for real-time features

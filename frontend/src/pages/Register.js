@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FileText, Eye, EyeOff, User, Mail, Lock } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -22,6 +22,7 @@ const Register = () => {
   const [error, setError] = useState('');
 
   const { register } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -60,7 +61,7 @@ const Register = () => {
 
     try {
       await register(formData.username, formData.email, formData.password);
-      // Navigation is handled by the AuthProvider
+      navigate('/dashboard'); // Navigate to dashboard after successful registration
     } catch (error) {
       setError(error.response?.data?.message || 'Registration failed. Please try again.');
     } finally {

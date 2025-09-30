@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FileText, Eye, EyeOff } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -19,6 +19,7 @@ const Login = () => {
   const [error, setError] = useState('');
 
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -36,7 +37,7 @@ const Login = () => {
 
     try {
       await login(formData.email, formData.password);
-      // Navigation is handled by the AuthProvider
+      navigate('/dashboard'); // Navigate to dashboard after successful login
     } catch (error) {
       setError(error.response?.data?.message || 'Login failed. Please try again.');
     } finally {
