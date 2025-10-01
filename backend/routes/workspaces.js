@@ -273,6 +273,14 @@ router.post('/', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
   try {
+    // Check if it's a valid ObjectId
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        error: 'Invalid ID',
+        message: 'Invalid workspace ID format'
+      });
+    }
+
     const workspace = await Workspace.findById(req.params.id)
       .populate('owner', 'username')
       .populate('members.user', 'username')
@@ -295,6 +303,7 @@ router.get('/:id', async (req, res) => {
       });
     }
 
+    console.log('Workspace found:', workspace.name, 'Files:', workspace.files.length);
     res.json({ workspace });
 
   } catch (error) {
@@ -368,6 +377,14 @@ router.post('/:id/files', async (req, res) => {
       });
     }
 
+    // Check if it's a valid ObjectId
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        error: 'Invalid ID',
+        message: 'Invalid workspace ID format'
+      });
+    }
+
     const workspace = await Workspace.findById(req.params.id);
 
     if (!workspace) {
@@ -395,10 +412,14 @@ router.post('/:id/files', async (req, res) => {
     
     // Add initial version
     const newFile = workspace.files[workspace.files.length - 1];
-    workspace.addFileVersion(newFile._id, content || '', req.user._id);
+    if (content) {
+      workspace.addFileVersion(newFile._id, content, req.user._id);
+    }
 
     await workspace.save();
     await workspace.populate('files.createdBy', 'username');
+
+    console.log('File added to workspace:', newFile.name);
 
     res.status(201).json({
       message: 'File added successfully',
@@ -422,6 +443,14 @@ router.post('/:id/files', async (req, res) => {
 router.put('/:id/files/:fileId', async (req, res) => {
   try {
     const { content, name } = req.body;
+
+    // Check if it's a valid ObjectId
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        error: 'Invalid ID',
+        message: 'Invalid workspace ID format'
+      });
+    }
 
     const workspace = await Workspace.findById(req.params.id);
 
@@ -460,9 +489,13 @@ router.put('/:id/files/:fileId', async (req, res) => {
     if (name) file.name = name;
     if (content !== undefined && content !== file.content) {
       workspace.addFileVersion(file._id, content, req.user._id);
+    } else if (content !== undefined) {
+      file.content = content;
     }
 
     await workspace.save();
+
+    console.log('File updated:', file.name, 'Content length:', content?.length || 0);
 
     res.json({
       message: 'File updated successfully',

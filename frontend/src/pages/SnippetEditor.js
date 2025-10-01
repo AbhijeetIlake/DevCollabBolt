@@ -77,22 +77,30 @@ const SnippetEditor = () => {
       setSaving(true);
       
       const snippetData = {
-        ...snippet,
+        title: snippet.title,
+        description: snippet.description,
+        content: snippet.content,
+        language: snippet.language,
+        isPublic: snippet.isPublic,
         tags: snippet.tags.filter(tag => tag.trim())
       };
 
+      console.log('Saving snippet with data:', snippetData);
+
       if (isEditing) {
         const response = await snippetService.updateSnippet(id, snippetData);
+        console.log('Update response:', response);
         // Update local state with response data
         setSnippet(response.snippet);
         setVersions(response.snippet.versions || []);
       } else {
         const response = await snippetService.createSnippet(snippetData);
+        console.log('Create response:', response);
         navigate(`/snippets/${response.snippet._id}`);
       }
     } catch (error) {
       console.error('Failed to save snippet:', error);
-      alert('Failed to save snippet. Please try again.');
+      alert(`Failed to save snippet: ${error.response?.data?.message || error.message}`);
     } finally {
       setSaving(false);
     }

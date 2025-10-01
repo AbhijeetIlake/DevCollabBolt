@@ -72,9 +72,12 @@ const snippetService = {
    */
   createSnippet: async (snippetData) => {
     try {
+      console.log('Creating snippet with data:', snippetData);
       const response = await api.post('/snippets', snippetData);
+      console.log('Snippet created successfully:', response.data);
       return response.data;
     } catch (error) {
+      console.error('Create snippet error:', error.response?.data || error.message);
       throw error;
     }
   },
@@ -84,9 +87,12 @@ const snippetService = {
    */
   updateSnippet: async (id, snippetData) => {
     try {
+      console.log('Updating snippet', id, 'with data:', snippetData);
       const response = await api.put(`/snippets/${id}`, snippetData);
+      console.log('Snippet updated successfully:', response.data);
       return response.data;
     } catch (error) {
+      console.error('Update snippet error:', error.response?.data || error.message);
       throw error;
     }
   },

@@ -60,9 +60,12 @@ const workspaceService = {
    */
   getWorkspace: async (id) => {
     try {
+      console.log('Fetching workspace:', id);
       const response = await api.get(`/workspaces/${id}`);
+      console.log('Workspace fetched successfully:', response.data.workspace.name);
       return response.data;
     } catch (error) {
+      console.error('Get workspace error:', error.response?.data || error.message);
       throw error;
     }
   },
@@ -98,9 +101,12 @@ const workspaceService = {
    */
   addFile: async (workspaceId, fileData) => {
     try {
+      console.log('Adding file to workspace:', workspaceId, fileData);
       const response = await api.post(`/workspaces/${workspaceId}/files`, fileData);
+      console.log('File added successfully:', response.data);
       return response.data;
     } catch (error) {
+      console.error('Add file error:', error.response?.data || error.message);
       throw error;
     }
   },
@@ -110,9 +116,12 @@ const workspaceService = {
    */
   updateFile: async (workspaceId, fileId, fileData) => {
     try {
+      console.log('Updating file:', fileId, 'in workspace:', workspaceId, fileData);
       const response = await api.put(`/workspaces/${workspaceId}/files/${fileId}`, fileData);
+      console.log('File updated successfully:', response.data);
       return response.data;
     } catch (error) {
+      console.error('Update file error:', error.response?.data || error.message);
       throw error;
     }
   },

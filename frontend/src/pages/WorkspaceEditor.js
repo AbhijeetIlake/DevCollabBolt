@@ -96,7 +96,9 @@ const WorkspaceEditor = () => {
   const loadWorkspace = async () => {
     try {
       setLoading(true);
+      console.log('Loading workspace with ID:', id);
       const response = await workspaceService.getWorkspace(id);
+      console.log('Workspace loaded:', response);
       setWorkspace(response.workspace);
       
       // Select first file if available
@@ -110,7 +112,9 @@ const WorkspaceEditor = () => {
       setExecutionResults(response.workspace.executionResults.slice(0, 10));
     } catch (error) {
       console.error('Failed to load workspace:', error);
-      navigate('/workspaces');
+      alert(`Failed to load workspace: ${error.response?.data?.message || error.message}`);
+      // Don't navigate away immediately, let user see the error
+      setTimeout(() => navigate('/workspaces'), 3000);
     } finally {
       setLoading(false);
     }
@@ -134,13 +138,15 @@ const WorkspaceEditor = () => {
     }
 
     try {
+      console.log('Adding file:', addFileForm);
       await workspaceService.addFile(id, addFileForm);
       setShowAddFileModal(false);
       setAddFileForm({ name: '', language: 'javascript' });
-      loadWorkspace();
+      await loadWorkspace(); // Wait for reload to complete
+      console.log('File added successfully');
     } catch (error) {
       console.error('Failed to add file:', error);
-      alert('Failed to add file. Please try again.');
+      alert(`Failed to add file: ${error.response?.data?.message || error.message}`);
     }
   };
 
@@ -149,6 +155,7 @@ const WorkspaceEditor = () => {
 
     try {
       setSaving(true);
+      console.log('Saving file:', selectedFile.name, 'Content length:', fileContent.length);
       await workspaceService.updateFile(id, selectedFile._id, {
         content: fileContent
       });
@@ -164,9 +171,10 @@ const WorkspaceEditor = () => {
       }));
       
       setSelectedFile(prev => ({ ...prev, content: fileContent }));
+      console.log('File saved successfully');
     } catch (error) {
       console.error('Failed to save file:', error);
-      alert('Failed to save file. Please try again.');
+      alert(`Failed to save file: ${error.response?.data?.message || error.message}`);
     } finally {
       setSaving(false);
     }

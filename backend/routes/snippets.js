@@ -123,6 +123,14 @@ router.post('/', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
   try {
+    // Check if it's a valid ObjectId
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        error: 'Invalid ID',
+        message: 'Invalid snippet ID format'
+      });
+    }
+
     const snippet = await Snippet.findOne({
       _id: req.params.id,
       $or: [
@@ -164,6 +172,14 @@ router.put('/:id', async (req, res) => {
   try {
     const { title, description, content, language, isPublic, tags } = req.body;
 
+    // Check if it's a valid ObjectId
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        error: 'Invalid ID',
+        message: 'Invalid snippet ID format'
+      });
+    }
+
     const snippet = await Snippet.findOne({
       _id: req.params.id,
       author: req.user._id
@@ -186,6 +202,8 @@ router.put('/:id', async (req, res) => {
     // Add new version if content changed
     if (content && content !== snippet.content) {
       snippet.addVersion(content);
+    } else if (content !== undefined) {
+      snippet.content = content;
     }
 
     await snippet.save();
