@@ -14,6 +14,7 @@ const authMiddleware = async (req, res, next) => {
   try {
     // Get token from header
     const authHeader = req.header('Authorization');
+    console.log('Auth header:', authHeader);
     
     if (!authHeader) {
       return res.status(401).json({ 
@@ -32,12 +33,15 @@ const authMiddleware = async (req, res, next) => {
 
     // Extract token
     const token = authHeader.substring(7);
+    console.log('Extracted token:', token.substring(0, 20) + '...');
 
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('Decoded token:', decoded);
     
     // Get user from database (excluding password)
     const user = await User.findById(decoded.userId).select('-password');
+    console.log('Found user:', user ? user.username : 'null');
     
     if (!user) {
       return res.status(401).json({ 

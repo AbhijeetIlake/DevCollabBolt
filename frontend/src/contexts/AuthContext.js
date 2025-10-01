@@ -59,7 +59,6 @@ export const AuthProvider = ({ children }) => {
    */
   const login = async (email, password) => {
     try {
-      setLoading(true);
       setError(null);
       
       const response = await authService.login(email, password);
@@ -74,8 +73,6 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       setError(error.response?.data?.message || 'Login failed');
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -84,7 +81,6 @@ export const AuthProvider = ({ children }) => {
    */
   const register = async (username, email, password) => {
     try {
-      setLoading(true);
       setError(null);
       
       const response = await authService.register(username, email, password);
@@ -99,8 +95,6 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       setError(error.response?.data?.message || 'Registration failed');
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 

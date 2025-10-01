@@ -53,8 +53,8 @@ const Dashboard = () => {
       const totalViews = snippetsResponse.snippets.reduce((sum, s) => sum + s.views, 0);
       
       setStats({
-        snippets: snippetsResponse.total,
-        workspaces: workspacesResponse.total,
+        snippets: snippetsResponse.total || 0,
+        workspaces: workspacesResponse.total || 0,
         publicSnippets,
         totalViews
       });

@@ -37,7 +37,7 @@ const Login = () => {
 
     try {
       await login(formData.email, formData.password);
-      navigate('/dashboard'); // Navigate to dashboard after successful login
+      navigate('/dashboard', { replace: true }); // Navigate to dashboard after successful login
     } catch (error) {
       setError(error.response?.data?.message || 'Login failed. Please try again.');
     } finally {

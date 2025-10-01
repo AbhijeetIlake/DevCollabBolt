@@ -61,7 +61,7 @@ const Register = () => {
 
     try {
       await register(formData.username, formData.email, formData.password);
-      navigate('/dashboard'); // Navigate to dashboard after successful registration
+      navigate('/dashboard', { replace: true }); // Navigate to dashboard after successful registration
     } catch (error) {
       setError(error.response?.data?.message || 'Registration failed. Please try again.');
     } finally {

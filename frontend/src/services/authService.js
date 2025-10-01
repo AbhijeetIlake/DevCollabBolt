@@ -22,6 +22,7 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    console.log('Making API request to:', config.url, 'with token:', !!token);
     return config;
   },
   (error) => {
@@ -33,10 +34,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && error.config.url !== '/auth/login' && error.config.url !== '/auth/register') {
       // Token expired or invalid
       localStorage.removeItem('token');
-      window.location.href = '/login';
+      // Only redirect if not already on login/register page
+      if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/register')) {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

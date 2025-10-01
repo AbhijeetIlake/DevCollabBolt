@@ -33,7 +33,7 @@ const ProtectedRoute = ({ children }) => {
     return <LoadingSpinner />;
   }
   
-  return user ? children : <Navigate to="/login" />;
+  return user ? children : <Navigate to="/login" replace />;
 };
 
 /**
@@ -47,7 +47,7 @@ const PublicRoute = ({ children }) => {
     return <LoadingSpinner />;
   }
   
-  return user ? <Navigate to="/dashboard" /> : children;
+  return user ? <Navigate to="/dashboard" replace /> : children;
 };
 
 /**
