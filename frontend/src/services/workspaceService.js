@@ -22,9 +22,22 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    console.log('Making workspace API request to:', config.url);
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Handle responses and errors
+api.interceptors.response.use(
+  (response) => {
+    console.log('Workspace API response:', response.status, response.config.url);
+    return response;
+  },
+  (error) => {
+    console.error('Workspace API error:', error.response?.status, error.config?.url, error.response?.data);
     return Promise.reject(error);
   }
 );

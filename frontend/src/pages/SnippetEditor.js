@@ -82,15 +82,13 @@ const SnippetEditor = () => {
       };
 
       if (isEditing) {
-        await snippetService.updateSnippet(id, snippetData);
+        const response = await snippetService.updateSnippet(id, snippetData);
+        // Update local state with response data
+        setSnippet(response.snippet);
+        setVersions(response.snippet.versions || []);
       } else {
         const response = await snippetService.createSnippet(snippetData);
         navigate(`/snippets/${response.snippet._id}`);
-      }
-      
-      // Reload snippet to get updated versions
-      if (isEditing) {
-        loadSnippet();
       }
     } catch (error) {
       console.error('Failed to save snippet:', error);
@@ -125,8 +123,10 @@ const SnippetEditor = () => {
   const handleRestoreVersion = async (versionIndex) => {
     if (window.confirm('Are you sure you want to restore this version? Current changes will be saved as a new version.')) {
       try {
-        await snippetService.restoreVersion(id, versionIndex);
-        loadSnippet();
+        const response = await snippetService.restoreVersion(id, versionIndex);
+        // Update local state with restored snippet
+        setSnippet(response.snippet);
+        setVersions(response.snippet.versions || []);
       } catch (error) {
         console.error('Failed to restore version:', error);
         alert('Failed to restore version. Please try again.');

@@ -76,7 +76,8 @@ const Snippets = () => {
     if (window.confirm('Are you sure you want to delete this snippet?')) {
       try {
         await snippetService.deleteSnippet(snippetId);
-        loadSnippets();
+        // Reload snippets after successful deletion
+        await loadSnippets();
       } catch (error) {
         console.error('Failed to delete snippet:', error);
         alert('Failed to delete snippet. Please try again.');

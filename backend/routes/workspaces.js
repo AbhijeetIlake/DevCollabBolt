@@ -114,6 +114,11 @@ const executeCode = async ({ workspaceId, fileId, code, language, userId, io }) 
         
         // Update execution result
         const updatedWorkspace = await Workspace.findById(workspaceId);
+        if (!updatedWorkspace) {
+          resolve();
+          return;
+        }
+        
         const result = updatedWorkspace.executionResults.id(resultId);
         
         if (result) {
@@ -126,10 +131,12 @@ const executeCode = async ({ workspaceId, fileId, code, language, userId, io }) 
           await updatedWorkspace.save();
           
           // Emit result via Socket.IO
-          io.to(workspaceId).emit('execution-result', {
-            fileId,
-            result: result.toObject()
-          });
+          if (io) {
+            io.to(workspaceId).emit('execution-result', {
+              fileId,
+              result: result.toObject()
+            });
+          }
         }
         
         resolve();
@@ -140,6 +147,11 @@ const executeCode = async ({ workspaceId, fileId, code, language, userId, io }) 
         
         // Update execution result
         const updatedWorkspace = await Workspace.findById(workspaceId);
+        if (!updatedWorkspace) {
+          resolve();
+          return;
+        }
+        
         const result = updatedWorkspace.executionResults.id(resultId);
         
         if (result) {
@@ -150,10 +162,12 @@ const executeCode = async ({ workspaceId, fileId, code, language, userId, io }) 
           await updatedWorkspace.save();
           
           // Emit result via Socket.IO
-          io.to(workspaceId).emit('execution-result', {
-            fileId,
-            result: result.toObject()
-          });
+          if (io) {
+            io.to(workspaceId).emit('execution-result', {
+              fileId,
+              result: result.toObject()
+            });
+          }
         }
         
         resolve();

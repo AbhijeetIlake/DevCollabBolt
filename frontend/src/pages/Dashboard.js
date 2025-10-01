@@ -42,15 +42,18 @@ const Dashboard = () => {
       
       // Load recent snippets
       const snippetsResponse = await snippetService.getSnippets({ limit: 5 });
-      setRecentSnippets(snippetsResponse.snippets);
+      setRecentSnippets(snippetsResponse.snippets || []);
       
       // Load recent workspaces
       const workspacesResponse = await workspaceService.getWorkspaces({ limit: 5 });
-      setRecentWorkspaces(workspacesResponse.workspaces);
+      setRecentWorkspaces(workspacesResponse.workspaces || []);
       
       // Calculate stats
-      const publicSnippets = snippetsResponse.snippets.filter(s => s.isPublic).length;
-      const totalViews = snippetsResponse.snippets.reduce((sum, s) => sum + s.views, 0);
+      const snippets = snippetsResponse.snippets || [];
+      const workspaces = workspacesResponse.workspaces || [];
+      
+      const publicSnippets = snippets.filter(s => s.isPublic).length;
+      const totalViews = snippets.reduce((sum, s) => sum + (s.views || 0), 0);
       
       setStats({
         snippets: snippetsResponse.total || 0,
@@ -61,6 +64,15 @@ const Dashboard = () => {
       
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
+      // Set empty arrays to prevent UI errors
+      setRecentSnippets([]);
+      setRecentWorkspaces([]);
+      setStats({
+        snippets: 0,
+        workspaces: 0,
+        publicSnippets: 0,
+        totalViews: 0
+      });
     } finally {
       setLoading(false);
     }

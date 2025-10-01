@@ -22,9 +22,22 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    console.log('Making snippet API request to:', config.url);
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Handle responses and errors
+api.interceptors.response.use(
+  (response) => {
+    console.log('Snippet API response:', response.status, response.config.url);
+    return response;
+  },
+  (error) => {
+    console.error('Snippet API error:', error.response?.status, error.config?.url, error.response?.data);
     return Promise.reject(error);
   }
 );
@@ -109,7 +122,8 @@ const snippetService = {
    */
   getSharedSnippet: async (shareId) => {
     try {
-      const response = await api.get(`/snippets/share/${shareId}`);
+      // Use axios directly without auth interceptor for shared snippets
+      const response = await axios.get(`${API_URL}/snippets/share/${shareId}`);
       return response.data;
     } catch (error) {
       throw error;

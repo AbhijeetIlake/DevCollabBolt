@@ -81,6 +81,12 @@ io.on('connection', (socket) => {
     console.log(`👤 User ${socket.id} joined workspace ${workspaceId}`);
   });
 
+  // Leave workspace room
+  socket.on('leave-workspace', (workspaceId) => {
+    socket.leave(workspaceId);
+    console.log(`👤 User ${socket.id} left workspace ${workspaceId}`);
+  });
+
   // Handle file locking
   socket.on('lock-file', (data) => {
     socket.to(data.workspaceId).emit('file-locked', {
@@ -88,6 +94,7 @@ io.on('connection', (socket) => {
       userId: data.userId,
       username: data.username
     });
+    console.log(`🔒 File ${data.fileId} locked by ${data.username}`);
   });
 
   // Handle file unlocking
@@ -96,6 +103,7 @@ io.on('connection', (socket) => {
       fileId: data.fileId,
       userId: data.userId
     });
+    console.log(`🔓 File ${data.fileId} unlocked by user ${data.userId}`);
   });
 
   // Handle disconnection
@@ -109,7 +117,14 @@ app.set('io', io);
 
 // API Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/snippets', authMiddleware, snippetRoutes);
+app.use('/api/snippets', (req, res, next) => {
+  // Allow public access to shared snippets
+  if (req.path.startsWith('/share/')) {
+    return next();
+  }
+  // Require auth for all other snippet routes
+  return authMiddleware(req, res, next);
+}, snippetRoutes);
 app.use('/api/workspaces', authMiddleware, workspaceRoutes);
 
 // Health check endpoint

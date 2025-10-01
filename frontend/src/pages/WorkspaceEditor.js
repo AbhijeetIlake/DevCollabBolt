@@ -444,7 +444,15 @@ const WorkspaceEditor = () => {
               {executionResults.map((result, index) => (
                 <div key={index} className="text-sm">
                   <div className="text-gray-400 mb-1">
-                    {formatDate(result.createdAt)} • {result.status}
+                    {formatDate(result.createdAt)} • 
+                    <span className={`ml-1 px-2 py-1 rounded text-xs ${
+                      result.status === 'completed' ? 'bg-green-600 text-white' :
+                      result.status === 'error' ? 'bg-red-600 text-white' :
+                      result.status === 'running' ? 'bg-yellow-600 text-white' :
+                      'bg-gray-600 text-white'
+                    }`}>
+                      {result.status}
+                    </span>
                   </div>
                   {result.stdout && (
                     <div className="execution-output mb-2">
@@ -459,7 +467,7 @@ const WorkspaceEditor = () => {
                     </div>
                   )}
                   <div className="text-xs text-gray-500">
-                    Exit code: {result.exitCode} • Time: {result.executionTime}ms
+                    Exit code: {result.exitCode ?? 'N/A'} • Time: {result.executionTime || 0}ms
                   </div>
                 </div>
               ))}
