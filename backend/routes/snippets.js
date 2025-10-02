@@ -15,7 +15,7 @@ const router = express.Router();
  */
 router.get('/', async (req, res) => {
   try {
-    const { page = 1, limit = 10, search, language, isPublic } = req.query;
+    const { page = 1, limit = 10, search, lang, isPublic } = req.query;
     
     // Build query
     const query = { author: req.user._id };
@@ -28,8 +28,8 @@ router.get('/', async (req, res) => {
       ];
     }
     
-    if (language) {
-      query.language = language;
+    if (lang) {
+      query.lang = lang;
     }
     
     if (isPublic !== undefined) {
@@ -67,34 +67,34 @@ router.get('/', async (req, res) => {
  */
 router.post('/', async (req, res) => {
   try {
-    const { title, description, content, language, isPublic = false, tags = [] } = req.body;
+    const { title, description, content, lang, isPublic = false, tags = [] } = req.body;
 
     // Validation
-    if (!title || !content || !language) {
+    if (!title || !content || !lang) {
       return res.status(400).json({
         error: 'Validation error',
-        message: 'Title, content, and language are required'
+        message: 'Title, content, and lang are required'
       });
     }
 
-    // Validate language
+    // Validate lang
     const validLanguages = [
       'javascript', 'typescript', 'python', 'java', 'cpp', 'c', 'csharp',
       'php', 'ruby', 'go', 'rust', 'swift', 'kotlin', 'html', 'css',
       'sql', 'json', 'xml', 'yaml', 'markdown', 'shell', 'dockerfile'
     ];
     
-    if (!validLanguages.includes(language)) {
+    if (!validLanguages.includes(lang)) {
       return res.status(400).json({
         error: 'Validation error',
-        message: 'Invalid programming language'
+        message: 'Invalid programming lang'
       });
     }
     const snippet = new Snippet({
       title,
       description,
       content,
-      language,
+      lang,
       isPublic,
       author: req.user._id,
       tags: Array.isArray(tags) ? tags : []
@@ -192,7 +192,7 @@ router.get('/:id', async (req, res) => {
  */
 router.put('/:id', async (req, res) => {
   try {
-    const { title, description, content, language, isPublic, tags = [] } = req.body;
+    const { title, description, content, lang, isPublic, tags = [] } = req.body;
 
     // Check if it's a valid ObjectId
     if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
@@ -217,7 +217,7 @@ router.put('/:id', async (req, res) => {
     // Update fields
     if (title) snippet.title = title;
     if (description !== undefined) snippet.description = description;
-    if (language) snippet.language = language;
+    if (lang) snippet.lang = lang;
     if (isPublic !== undefined) snippet.isPublic = isPublic;
     if (Array.isArray(tags)) snippet.tags = tags;
 

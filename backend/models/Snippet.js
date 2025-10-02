@@ -32,9 +32,9 @@ const snippetSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Snippet content is required']
   },
-  language: {
+  lang: {
     type: String,
-    required: [true, 'Programming language is required'],
+    required: [true, 'Programming lang is required'],
     enum: [
       'javascript', 'typescript', 'python', 'java', 'cpp', 'c', 'csharp',
       'php', 'ruby', 'go', 'rust', 'swift', 'kotlin', 'html', 'css',
