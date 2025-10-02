@@ -49,6 +49,11 @@ const WorkspaceEditor = () => {
   ];
 
   useEffect(() => {
+    if (!id || id === 'undefined') {
+      console.error('Invalid workspace ID:', id);
+      navigate('/workspaces');
+      return;
+    }
     loadWorkspace();
   }, [id]);
 
@@ -97,6 +102,11 @@ const WorkspaceEditor = () => {
     try {
       setLoading(true);
       console.log('Loading workspace with ID:', id);
+      
+      if (!id || id === 'undefined') {
+        throw new Error('Invalid workspace ID');
+      }
+      
       const response = await workspaceService.getWorkspace(id);
       console.log('Workspace loaded:', response);
       setWorkspace(response.workspace);
@@ -109,12 +119,12 @@ const WorkspaceEditor = () => {
       }
       
       // Load execution results
-      setExecutionResults(response.workspace.executionResults.slice(0, 10));
+      setExecutionResults(response.workspace.executionResults ? response.workspace.executionResults.slice(0, 10) : []);
     } catch (error) {
       console.error('Failed to load workspace:', error);
-      alert(`Failed to load workspace: ${error.response?.data?.message || error.message}`);
-      // Don't navigate away immediately, let user see the error
-      setTimeout(() => navigate('/workspaces'), 3000);
+      const errorMessage = error.response?.data?.message || error.message || 'Unknown error occurred';
+      alert(`Failed to load workspace: ${errorMessage}`);
+      navigate('/workspaces');
     } finally {
       setLoading(false);
     }

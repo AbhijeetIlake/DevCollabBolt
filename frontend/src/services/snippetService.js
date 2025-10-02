@@ -72,6 +72,11 @@ const snippetService = {
    */
   createSnippet: async (snippetData) => {
     try {
+      // Validate required fields
+      if (!snippetData.title || !snippetData.content || !snippetData.language) {
+        throw new Error('Title, content, and language are required');
+      }
+      
       console.log('Creating snippet with data:', snippetData);
       const response = await api.post('/snippets', snippetData);
       console.log('Snippet created successfully:', response.data);
@@ -87,6 +92,10 @@ const snippetService = {
    */
   updateSnippet: async (id, snippetData) => {
     try {
+      if (!id || id === 'undefined' || id === 'null') {
+        throw new Error('Invalid snippet ID provided');
+      }
+      
       console.log('Updating snippet', id, 'with data:', snippetData);
       const response = await api.put(`/snippets/${id}`, snippetData);
       console.log('Snippet updated successfully:', response.data);

@@ -60,6 +60,9 @@ const workspaceService = {
    */
   getWorkspace: async (id) => {
     try {
+      if (!id || id === 'undefined' || id === 'null') {
+        throw new Error('Invalid workspace ID provided');
+      }
       console.log('Fetching workspace:', id);
       const response = await api.get(`/workspaces/${id}`);
       console.log('Workspace fetched successfully:', response.data.workspace.name);

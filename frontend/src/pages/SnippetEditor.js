@@ -49,6 +49,11 @@ const SnippetEditor = () => {
 
   useEffect(() => {
     if (isEditing) {
+      if (!id || id === 'undefined') {
+        console.error('Invalid snippet ID:', id);
+        navigate('/snippets');
+        return;
+      }
       loadSnippet();
     }
   }, [id, isEditing]);
@@ -78,19 +83,20 @@ const SnippetEditor = () => {
       
       const snippetData = {
         title: snippet.title,
-        description: snippet.description,
+        description: snippet.description || '',
         content: snippet.content,
         language: snippet.language,
         isPublic: snippet.isPublic,
-        tags: snippet.tags.filter(tag => tag.trim())
+        tags: Array.isArray(snippet.tags) ? snippet.tags.filter(tag => tag && tag.trim()) : []
       };
+
+      console.log('Saving snippet with data:', snippetData);
 
       if (isEditing) {
         const response = await snippetService.updateSnippet(id, snippetData);
         // Update local state with response data
         setSnippet(response.snippet);
         setVersions(response.snippet.versions || []);
-        // Show success message
         alert('Snippet updated successfully!');
       } else {
         const response = await snippetService.createSnippet(snippetData);
@@ -99,7 +105,8 @@ const SnippetEditor = () => {
       }
     } catch (error) {
       console.error('Failed to save snippet:', error);
-      alert(`Failed to save snippet: ${error.response?.data?.message || error.message}`);
+      const errorMessage = error.response?.data?.message || error.message || 'Unknown error occurred';
+      alert(`Failed to save snippet: ${errorMessage}`);
     } finally {
       setSaving(false);
     }

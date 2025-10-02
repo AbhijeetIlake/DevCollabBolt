@@ -285,6 +285,8 @@ router.get('/:id', async (req, res) => {
       });
     }
 
+    console.log('Fetching workspace with ID:', req.params.id);
+
     const workspace = await Workspace.findById(req.params.id)
       .populate('owner', 'username')
       .populate('members.user', 'username')
@@ -293,6 +295,7 @@ router.get('/:id', async (req, res) => {
       .populate('executionResults.executedBy', 'username');
 
     if (!workspace) {
+      console.log('Workspace not found for ID:', req.params.id);
       return res.status(404).json({
         error: 'Not found',
         message: 'Workspace not found'
@@ -301,6 +304,7 @@ router.get('/:id', async (req, res) => {
 
     // Check if user has access
     if (!workspace.isMember(req.user._id) && !workspace.isPublic) {
+      console.log('Access denied for user:', req.user._id, 'to workspace:', req.params.id);
       return res.status(403).json({
         error: 'Access denied',
         message: 'You do not have access to this workspace'
@@ -312,6 +316,14 @@ router.get('/:id', async (req, res) => {
 
   } catch (error) {
     console.error('Get workspace error:', error);
+    
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        error: 'Invalid ID',
+        message: 'Invalid workspace ID format'
+      });
+    }
+    
     res.status(500).json({
       error: 'Server error',
       message: 'Failed to fetch workspace'

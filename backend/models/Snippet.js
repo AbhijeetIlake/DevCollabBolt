@@ -84,6 +84,8 @@ snippetSchema.index({ tags: 1 });
 
 // Method to add a new version (keep only last 3 versions)
 snippetSchema.methods.addVersion = function(content) {
+  if (!content) return;
+  
   this.versions.unshift({ content });
   
   // Keep only the last 3 versions

@@ -67,7 +67,7 @@ router.get('/', async (req, res) => {
  */
 router.post('/', async (req, res) => {
   try {
-    const { title, description, content, language, isPublic, tags } = req.body;
+    const { title, description, content, language, isPublic = false, tags = [] } = req.body;
 
     // Validation
     if (!title || !content || !language) {
@@ -95,13 +95,15 @@ router.post('/', async (req, res) => {
       description,
       content,
       language,
-      isPublic: isPublic || false,
+      isPublic,
       author: req.user._id,
-      tags: tags || []
+      tags: Array.isArray(tags) ? tags : []
     });
 
     // Add initial version
-    snippet.addVersion(content);
+    if (content) {
+      snippet.addVersion(content);
+    }
 
     await snippet.save();
     await snippet.populate('author', 'username');
@@ -119,6 +121,13 @@ router.post('/', async (req, res) => {
       return res.status(400).json({
         error: 'Validation error',
         message: messages.join(', ')
+      });
+    }
+
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        error: 'Invalid ID',
+        message: 'Invalid snippet ID format'
       });
     }
 
@@ -183,7 +192,7 @@ router.get('/:id', async (req, res) => {
  */
 router.put('/:id', async (req, res) => {
   try {
-    const { title, description, content, language, isPublic, tags } = req.body;
+    const { title, description, content, language, isPublic, tags = [] } = req.body;
 
     // Check if it's a valid ObjectId
     if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
@@ -210,13 +219,11 @@ router.put('/:id', async (req, res) => {
     if (description !== undefined) snippet.description = description;
     if (language) snippet.language = language;
     if (isPublic !== undefined) snippet.isPublic = isPublic;
-    if (tags) snippet.tags = tags;
+    if (Array.isArray(tags)) snippet.tags = tags;
 
     // Add new version if content changed
     if (content && content !== snippet.content) {
       snippet.addVersion(content);
-    } else if (content !== undefined) {
-      snippet.content = content;
     }
 
     await snippet.save();
