@@ -138,12 +138,11 @@ const WorkspaceEditor = () => {
     }
 
     try {
-      console.log('Adding file:', addFileForm);
       await workspaceService.addFile(id, addFileForm);
+      alert('File added successfully!');
       setShowAddFileModal(false);
       setAddFileForm({ name: '', language: 'javascript' });
       await loadWorkspace(); // Wait for reload to complete
-      console.log('File added successfully');
     } catch (error) {
       console.error('Failed to add file:', error);
       alert(`Failed to add file: ${error.response?.data?.message || error.message}`);
@@ -155,7 +154,6 @@ const WorkspaceEditor = () => {
 
     try {
       setSaving(true);
-      console.log('Saving file:', selectedFile.name, 'Content length:', fileContent.length);
       await workspaceService.updateFile(id, selectedFile._id, {
         content: fileContent
       });
@@ -171,7 +169,7 @@ const WorkspaceEditor = () => {
       }));
       
       setSelectedFile(prev => ({ ...prev, content: fileContent }));
-      console.log('File saved successfully');
+      alert('File saved successfully!');
     } catch (error) {
       console.error('Failed to save file:', error);
       alert(`Failed to save file: ${error.response?.data?.message || error.message}`);

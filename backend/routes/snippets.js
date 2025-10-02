@@ -77,6 +77,19 @@ router.post('/', async (req, res) => {
       });
     }
 
+    // Validate language
+    const validLanguages = [
+      'javascript', 'typescript', 'python', 'java', 'cpp', 'c', 'csharp',
+      'php', 'ruby', 'go', 'rust', 'swift', 'kotlin', 'html', 'css',
+      'sql', 'json', 'xml', 'yaml', 'markdown', 'shell', 'dockerfile'
+    ];
+    
+    if (!validLanguages.includes(language)) {
+      return res.status(400).json({
+        error: 'Validation error',
+        message: 'Invalid programming language'
+      });
+    }
     const snippet = new Snippet({
       title,
       description,

@@ -76,6 +76,7 @@ const Snippets = () => {
     if (window.confirm('Are you sure you want to delete this snippet?')) {
       try {
         await snippetService.deleteSnippet(snippetId);
+        alert('Snippet deleted successfully!');
         // Reload snippets after successful deletion
         await loadSnippets();
       } catch (error) {
@@ -209,7 +210,7 @@ const Snippets = () => {
       ) : snippets.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {snippets.map((snippet) => (
-            <div key={snippet._id} className="card hover:shadow-lg transition-shadow">
+            <div key={snippet._id} className="card hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-900 mb-1 line-clamp-1">
@@ -221,9 +222,15 @@ const Snippets = () => {
                 </div>
                 <div className="flex items-center space-x-1 ml-2">
                   {snippet.isPublic ? (
-                    <Globe className="w-4 h-4 text-green-500" title="Public" />
+                    <div className="flex items-center bg-green-100 px-2 py-1 rounded-full">
+                      <Globe className="w-3 h-3 text-green-600 mr-1" />
+                      <span className="text-xs text-green-700 font-medium">Public</span>
+                    </div>
                   ) : (
-                    <Lock className="w-4 h-4 text-gray-400" title="Private" />
+                    <div className="flex items-center bg-gray-100 px-2 py-1 rounded-full">
+                      <Lock className="w-3 h-3 text-gray-500 mr-1" />
+                      <span className="text-xs text-gray-600 font-medium">Private</span>
+                    </div>
                   )}
                 </div>
               </div>

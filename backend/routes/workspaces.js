@@ -401,6 +401,20 @@ router.post('/:id/files', async (req, res) => {
       });
     }
 
+    // Validate language
+    const validLanguages = [
+      'javascript', 'typescript', 'python', 'java', 'cpp', 'c', 'csharp',
+      'php', 'ruby', 'go', 'rust', 'swift', 'kotlin', 'html', 'css',
+      'sql', 'json', 'xml', 'yaml', 'markdown', 'shell', 'dockerfile'
+    ];
+    
+    if (!validLanguages.includes(language)) {
+      return res.status(400).json({
+        error: 'Validation error',
+        message: 'Invalid programming language'
+      });
+    }
+
     const file = {
       name,
       content: content || '',
@@ -418,8 +432,6 @@ router.post('/:id/files', async (req, res) => {
 
     await workspace.save();
     await workspace.populate('files.createdBy', 'username');
-
-    console.log('File added to workspace:', newFile.name);
 
     res.status(201).json({
       message: 'File added successfully',

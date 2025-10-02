@@ -61,8 +61,8 @@ const Navbar = () => {
                   to={item.path}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
                     isActive(item.path)
-                      ? 'bg-primary-100 text-primary-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      ? 'bg-primary-100 text-primary-700 font-medium'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 font-medium'
                   }`}
                 >
                   <Icon className="w-4 h-4" />

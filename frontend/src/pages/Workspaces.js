@@ -76,6 +76,7 @@ const Workspaces = () => {
     try {
       setCreating(true);
       await workspaceService.createWorkspace(createForm);
+      alert('Workspace created successfully!');
       setShowCreateModal(false);
       setCreateForm({ name: '', description: '', isPublic: false });
       loadWorkspaces();
@@ -98,6 +99,7 @@ const Workspaces = () => {
     try {
       setJoining(true);
       await workspaceService.joinWorkspace(joinForm.workspaceId, joinForm.inviteCode);
+      alert('Successfully joined workspace!');
       setShowJoinModal(false);
       setJoinForm({ workspaceId: '', inviteCode: '' });
       loadWorkspaces();
@@ -177,7 +179,7 @@ const Workspaces = () => {
             <Link
               key={workspace._id}
               to={`/workspaces/${workspace._id}`}
-              className="card hover:shadow-lg transition-shadow cursor-pointer"
+              className="card hover:shadow-lg transition-all duration-200 cursor-pointer hover:scale-[1.02]"
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
@@ -190,9 +192,15 @@ const Workspaces = () => {
                 </div>
                 <div className="flex items-center space-x-1 ml-2">
                   {workspace.isPublic ? (
-                    <Globe className="w-4 h-4 text-green-500" title="Public" />
+                    <div className="flex items-center bg-green-100 px-2 py-1 rounded-full">
+                      <Globe className="w-3 h-3 text-green-600 mr-1" />
+                      <span className="text-xs text-green-700 font-medium">Public</span>
+                    </div>
                   ) : (
-                    <Lock className="w-4 h-4 text-gray-400" title="Private" />
+                    <div className="flex items-center bg-gray-100 px-2 py-1 rounded-full">
+                      <Lock className="w-3 h-3 text-gray-500 mr-1" />
+                      <span className="text-xs text-gray-600 font-medium">Private</span>
+                    </div>
                   )}
                 </div>
               </div>

@@ -85,17 +85,16 @@ const SnippetEditor = () => {
         tags: snippet.tags.filter(tag => tag.trim())
       };
 
-      console.log('Saving snippet with data:', snippetData);
-
       if (isEditing) {
         const response = await snippetService.updateSnippet(id, snippetData);
-        console.log('Update response:', response);
         // Update local state with response data
         setSnippet(response.snippet);
         setVersions(response.snippet.versions || []);
+        // Show success message
+        alert('Snippet updated successfully!');
       } else {
         const response = await snippetService.createSnippet(snippetData);
-        console.log('Create response:', response);
+        alert('Snippet created successfully!');
         navigate(`/snippets/${response.snippet._id}`);
       }
     } catch (error) {
@@ -279,17 +278,17 @@ const SnippetEditor = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Visibility
                   </label>
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-4 mt-2">
                     <label className="flex items-center">
                       <input
                         type="radio"
                         name="visibility"
                         checked={!snippet.isPublic}
                         onChange={() => setSnippet({ ...snippet, isPublic: false })}
-                        className="mr-2"
+                        className="mr-2 text-primary-600 focus:ring-primary-500"
                       />
                       <EyeOff className="w-4 h-4 mr-1" />
-                      Private
+                      <span className="text-sm">Private</span>
                     </label>
                     <label className="flex items-center">
                       <input
@@ -297,10 +296,10 @@ const SnippetEditor = () => {
                         name="visibility"
                         checked={snippet.isPublic}
                         onChange={() => setSnippet({ ...snippet, isPublic: true })}
-                        className="mr-2"
+                        className="mr-2 text-primary-600 focus:ring-primary-500"
                       />
                       <Eye className="w-4 h-4 mr-1" />
-                      Public
+                      <span className="text-sm">Public</span>
                     </label>
                   </div>
                 </div>
