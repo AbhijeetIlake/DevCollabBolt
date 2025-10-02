@@ -209,14 +209,19 @@ const SnippetEditor = () => {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="btn-primary flex items-center"
+            className="btn-primary flex items-center min-w-[100px]"
           >
             {saving ? (
-              <LoadingSpinner size="small" text="" />
+              <>
+                <LoadingSpinner size="small" text="" />
+                <span className="ml-2">Saving...</span>
+              </>
             ) : (
-              <Save className="w-4 h-4 mr-2" />
+              <>
+                <Save className="w-4 h-4 mr-2" />
+                Save
+              </>
             )}
-            {saving ? 'Saving...' : 'Save'}
           </button>
         </div>
       </div>
@@ -278,17 +283,17 @@ const SnippetEditor = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Visibility
                   </label>
-                  <div className="flex items-center space-x-4 mt-2">
+                  <div className="flex items-center space-x-4">
                     <label className="flex items-center">
                       <input
                         type="radio"
                         name="visibility"
                         checked={!snippet.isPublic}
                         onChange={() => setSnippet({ ...snippet, isPublic: false })}
-                        className="mr-2 text-primary-600 focus:ring-primary-500"
+                        className="mr-2"
                       />
                       <EyeOff className="w-4 h-4 mr-1" />
-                      <span className="text-sm">Private</span>
+                      Private
                     </label>
                     <label className="flex items-center">
                       <input
@@ -296,10 +301,10 @@ const SnippetEditor = () => {
                         name="visibility"
                         checked={snippet.isPublic}
                         onChange={() => setSnippet({ ...snippet, isPublic: true })}
-                        className="mr-2 text-primary-600 focus:ring-primary-500"
+                        className="mr-2"
                       />
                       <Eye className="w-4 h-4 mr-1" />
-                      <span className="text-sm">Public</span>
+                      Public
                     </label>
                   </div>
                 </div>

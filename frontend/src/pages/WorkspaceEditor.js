@@ -289,14 +289,14 @@ const WorkspaceEditor = () => {
                   <button
                     onClick={handleExecuteFile}
                     disabled={executing}
-                    className="btn-primary flex items-center"
+                    className="btn-primary flex items-center bg-green-600 hover:bg-green-700"
                   >
                     {executing ? (
                       <LoadingSpinner size="small" text="" />
                     ) : (
                       <Play className="w-4 h-4 mr-2" />
                     )}
-                    Run
+                    {executing ? 'Running...' : 'Run Code'}
                   </button>
                 ) : null}
               </>
