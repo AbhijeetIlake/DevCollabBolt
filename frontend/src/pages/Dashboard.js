@@ -107,61 +107,65 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl p-8 text-white">
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+        <div className="relative z-10">
         <h1 className="text-3xl font-bold mb-2">
           Welcome back, {user?.username}! 👋
         </h1>
-        <p className="text-primary-100">
+        <p className="text-blue-100">
           Ready to code and collaborate? Here's what's happening in your workspace.
         </p>
+        </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="card">
           <div className="flex items-center">
-            <div className="p-3 bg-primary-100 rounded-lg">
-              <Code className="w-6 h-6 text-primary-600" />
+            <div className="p-3 bg-blue-500/20 rounded-lg">
+              <Code className="w-6 h-6 text-blue-400" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Snippets</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.snippets}</p>
+              <p className="text-sm font-medium text-slate-400">Total Snippets</p>
+              <p className="text-2xl font-bold text-white">{stats.snippets}</p>
             </div>
           </div>
         </div>
 
         <div className="card">
           <div className="flex items-center">
-            <div className="p-3 bg-green-100 rounded-lg">
-              <Users className="w-6 h-6 text-green-600" />
+            <div className="p-3 bg-green-500/20 rounded-lg">
+              <Users className="w-6 h-6 text-green-400" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Workspaces</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.workspaces}</p>
+              <p className="text-sm font-medium text-slate-400">Workspaces</p>
+              <p className="text-2xl font-bold text-white">{stats.workspaces}</p>
             </div>
           </div>
         </div>
 
         <div className="card">
           <div className="flex items-center">
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <Globe className="w-6 h-6 text-blue-600" />
+            <div className="p-3 bg-purple-500/20 rounded-lg">
+              <Globe className="w-6 h-6 text-purple-400" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Public Snippets</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.publicSnippets}</p>
+              <p className="text-sm font-medium text-slate-400">Public Snippets</p>
+              <p className="text-2xl font-bold text-white">{stats.publicSnippets}</p>
             </div>
           </div>
         </div>
 
         <div className="card">
           <div className="flex items-center">
-            <div className="p-3 bg-purple-100 rounded-lg">
-              <Eye className="w-6 h-6 text-purple-600" />
+            <div className="p-3 bg-cyan-500/20 rounded-lg">
+              <Eye className="w-6 h-6 text-cyan-400" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Views</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalViews}</p>
+              <p className="text-sm font-medium text-slate-400">Total Views</p>
+              <p className="text-2xl font-bold text-white">{stats.totalViews}</p>
             </div>
           </div>
         </div>
@@ -174,12 +178,12 @@ const Dashboard = () => {
           className="card hover:shadow-lg transition-shadow cursor-pointer group"
         >
           <div className="flex items-center">
-            <div className="p-4 bg-primary-100 rounded-lg group-hover:bg-primary-200 transition-colors">
-              <Plus className="w-8 h-8 text-primary-600" />
+            <div className="p-4 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition-colors">
+              <Plus className="w-8 h-8 text-blue-400" />
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-semibold text-gray-900">Create New Snippet</h3>
-              <p className="text-gray-600">Start coding with a new snippet</p>
+              <h3 className="text-lg font-semibold text-white">Create New Snippet</h3>
+              <p className="text-slate-400">Start coding with a new snippet</p>
             </div>
           </div>
         </Link>
@@ -189,12 +193,12 @@ const Dashboard = () => {
           className="card hover:shadow-lg transition-shadow cursor-pointer group"
         >
           <div className="flex items-center">
-            <div className="p-4 bg-green-100 rounded-lg group-hover:bg-green-200 transition-colors">
-              <Plus className="w-8 h-8 text-green-600" />
+            <div className="p-4 bg-green-500/20 rounded-lg group-hover:bg-green-500/30 transition-colors">
+              <Plus className="w-8 h-8 text-green-400" />
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-semibold text-gray-900">Create Workspace</h3>
-              <p className="text-gray-600">Start a collaborative project</p>
+              <h3 className="text-lg font-semibold text-white">Create Workspace</h3>
+              <p className="text-slate-400">Start a collaborative project</p>
             </div>
           </div>
         </Link>
@@ -206,13 +210,13 @@ const Dashboard = () => {
         <div className="card">
           <div className="card-header">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center">
+              <h2 className="text-xl font-semibold text-white flex items-center">
                 <Code className="w-5 h-5 mr-2" />
                 Recent Snippets
               </h2>
               <Link
                 to="/snippets"
-                className="text-primary-600 hover:text-primary-700 text-sm font-medium"
+                className="text-blue-400 hover:text-blue-300 text-sm font-medium"
               >
                 View all
               </Link>
@@ -225,17 +229,17 @@ const Dashboard = () => {
                 <Link
                   key={snippet._id}
                   to={`/snippets/${snippet._id}`}
-                  className="block p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:shadow-sm transition-all"
+                  className="block p-4 border border-slate-700 rounded-lg hover:border-blue-500/50 hover:shadow-sm transition-all bg-slate-800/50"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-medium text-gray-900 mb-1">
+                      <h3 className="font-medium text-white mb-1">
                         {snippet.title}
                       </h3>
-                      <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                      <p className="text-sm text-slate-400 mb-2 line-clamp-2">
                         {snippet.description || 'No description'}
                       </p>
-                      <div className="flex items-center space-x-4 text-xs text-gray-500">
+                      <div className="flex items-center space-x-4 text-xs text-slate-500">
                         <span className={`px-2 py-1 rounded-full ${getLanguageColor(snippet.language)}`}>
                           {snippet.language}
                         </span>
@@ -248,9 +252,9 @@ const Dashboard = () => {
                           {snippet.views}
                         </span>
                         {snippet.isPublic ? (
-                          <Globe className="w-3 h-3 text-green-500" />
+                          <Globe className="w-3 h-3 text-green-400" />
                         ) : (
-                          <Lock className="w-3 h-3 text-gray-400" />
+                          <Lock className="w-3 h-3 text-slate-500" />
                         )}
                       </div>
                     </div>
@@ -259,11 +263,11 @@ const Dashboard = () => {
               ))
             ) : (
               <div className="text-center py-8">
-                <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">No snippets yet</p>
+                <FileText className="w-12 h-12 text-slate-500 mx-auto mb-4" />
+                <p className="text-slate-400">No snippets yet</p>
                 <Link
                   to="/snippets/new"
-                  className="text-primary-600 hover:text-primary-700 text-sm font-medium"
+                  className="text-blue-400 hover:text-blue-300 text-sm font-medium"
                 >
                   Create your first snippet
                 </Link>
@@ -276,13 +280,13 @@ const Dashboard = () => {
         <div className="card">
           <div className="card-header">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center">
+              <h2 className="text-xl font-semibold text-white flex items-center">
                 <Users className="w-5 h-5 mr-2" />
                 Recent Workspaces
               </h2>
               <Link
                 to="/workspaces"
-                className="text-primary-600 hover:text-primary-700 text-sm font-medium"
+                className="text-blue-400 hover:text-blue-300 text-sm font-medium"
               >
                 View all
               </Link>
@@ -295,17 +299,17 @@ const Dashboard = () => {
                 <Link
                   key={workspace._id}
                   to={`/workspaces/${workspace._id}`}
-                  className="block p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:shadow-sm transition-all"
+                  className="block p-4 border border-slate-700 rounded-lg hover:border-blue-500/50 hover:shadow-sm transition-all bg-slate-800/50"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-medium text-gray-900 mb-1">
+                      <h3 className="font-medium text-white mb-1">
                         {workspace.name}
                       </h3>
-                      <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                      <p className="text-sm text-slate-400 mb-2 line-clamp-2">
                         {workspace.description || 'No description'}
                       </p>
-                      <div className="flex items-center space-x-4 text-xs text-gray-500">
+                      <div className="flex items-center space-x-4 text-xs text-slate-500">
                         <span className="flex items-center">
                           <Users className="w-3 h-3 mr-1" />
                           {workspace.members.length + 1} members
@@ -319,9 +323,9 @@ const Dashboard = () => {
                           {formatDate(workspace.createdAt)}
                         </span>
                         {workspace.isPublic ? (
-                          <Globe className="w-3 h-3 text-green-500" />
+                          <Globe className="w-3 h-3 text-green-400" />
                         ) : (
-                          <Lock className="w-3 h-3 text-gray-400" />
+                          <Lock className="w-3 h-3 text-slate-500" />
                         )}
                       </div>
                     </div>
@@ -330,11 +334,11 @@ const Dashboard = () => {
               ))
             ) : (
               <div className="text-center py-8">
-                <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">No workspaces yet</p>
+                <Users className="w-12 h-12 text-slate-500 mx-auto mb-4" />
+                <p className="text-slate-400">No workspaces yet</p>
                 <Link
                   to="/workspaces"
-                  className="text-primary-600 hover:text-primary-700 text-sm font-medium"
+                  className="text-blue-400 hover:text-blue-300 text-sm font-medium"
                 >
                   Create your first workspace
                 </Link>

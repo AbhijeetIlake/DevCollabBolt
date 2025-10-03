@@ -9,6 +9,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SocketProvider } from './contexts/SocketContext';
 
 // Import pages
+import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -56,7 +57,7 @@ const PublicRoute = ({ children }) => {
  */
 const AppLayout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-900">
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         {children}
@@ -75,6 +76,10 @@ function App() {
         <div className="App">
           <Routes>
             {/* Public routes */}
+            <Route 
+              path="/" 
+              element={<Landing />} 
+            />
             <Route 
               path="/login" 
               element={
@@ -172,21 +177,20 @@ function App() {
             />
             
             {/* Default redirect */}
-            <Route path="/" element={<Navigate to="/dashboard" />} />
             
             {/* 404 fallback */}
             <Route 
               path="*" 
               element={
-                <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="min-h-screen flex items-center justify-center bg-slate-900">
                   <div className="text-center">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
-                    <p className="text-gray-600 mb-8">Page not found</p>
+                    <h1 className="text-4xl font-bold text-white mb-4">404</h1>
+                    <p className="text-slate-300 mb-8">Page not found</p>
                     <a 
-                      href="/dashboard" 
+                      href="/" 
                       className="btn-primary"
                     >
-                      Go to Dashboard
+                      Go Home
                     </a>
                   </div>
                 </div>
