@@ -3,10 +3,10 @@
  * Handles routing and global state management
  */
 
-import React, { useState, useEffect } from 'react';
+// import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { SocketProvider } from './contexts/SocketContext';
+// import { SocketProvider } from './contexts/SocketContext';
 
 // Import pages
 import Landing from './pages/Landing';
@@ -16,8 +16,8 @@ import Dashboard from './pages/Dashboard';
 import Snippets from './pages/Snippets';
 import SnippetEditor from './pages/SnippetEditor';
 import SharedSnippet from './pages/SharedSnippet';
-import Workspaces from './pages/Workspaces';
-import WorkspaceEditor from './pages/WorkspaceEditor';
+// import Workspaces from './pages/Workspaces';
+// import WorkspaceEditor from './pages/WorkspaceEditor';
 
 // Import components
 import Navbar from './components/Navbar';
