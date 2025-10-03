@@ -5,20 +5,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Code, 
-  Users, 
-  Zap, 
-  Shield, 
-  GitBranch, 
-  Play, 
-  Share2, 
-  Lock,
-  Globe,
-  ArrowRight,
-  Star,
-  CheckCircle
-} from 'lucide-react';
+import { Code, Users, Zap, Shield, GitBranch, Play, Share2, Lock, Globe, ArrowRight, Star, CircleCheck as CheckCircle } from 'lucide-react';
 
 const Landing = () => {
   const features = [
