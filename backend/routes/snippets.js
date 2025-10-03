@@ -355,6 +355,49 @@ router.get('/share/:shareId', async (req, res) => {
 });
 
 /**
+ * @route   POST /api/snippets/:id/like
+ * @desc    Like/unlike a snippet
+ * @access  Private
+ */
+router.post('/:id/like', async (req, res) => {
+  try {
+    const snippet = await Snippet.findById(req.params.id);
+
+    if (!snippet) {
+      return res.status(404).json({
+        error: 'Not found',
+        message: 'Snippet not found'
+      });
+    }
+
+    const userId = req.user._id;
+    const likeIndex = snippet.likes.indexOf(userId);
+
+    if (likeIndex > -1) {
+      // Unlike
+      snippet.likes.splice(likeIndex, 1);
+    } else {
+      // Like
+      snippet.likes.push(userId);
+    }
+
+    await snippet.save();
+
+    res.json({
+      message: likeIndex > -1 ? 'Snippet unliked' : 'Snippet liked',
+      likes: snippet.likes.length
+    });
+
+  } catch (error) {
+    console.error('Like snippet error:', error);
+    res.status(500).json({
+      error: 'Server error',
+      message: 'Failed to like snippet'
+    });
+  }
+});
+
+/**
  * @route   POST /api/snippets/:id/restore/:versionIndex
  * @desc    Restore a previous version of a snippet
  * @access  Private

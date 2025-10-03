@@ -86,9 +86,21 @@ const snippetService = {
     }
   },
 
+  /**
+   * Like/unlike a snippet
+   */
+  likeSnippet: async (id) => {
+    try {
+      const { data } = await api.post(`/${id}/like`);
+      return data;
+    } catch (error) {
+      throw new Error(formatError(error));
+    }
+  },
+
   getSharedSnippet: async (shareId) => {
     try {
-      const { data } = await axios.get(`${API_URL}/snippets/shared/${shareId}`);
+      const { data } = await axios.get(`${API_URL}/snippets/share/${shareId}`);
       return data;
     } catch (error) {
       throw new Error(formatError(error));

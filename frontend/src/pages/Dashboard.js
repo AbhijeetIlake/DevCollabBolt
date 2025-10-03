@@ -8,29 +8,31 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   Code, 
-  Users, 
   Plus, 
   FileText, 
   Clock, 
   Eye,
   Lock,
-  Globe
+  Globe,
+  Star,
+  TrendingUp,
+  Heart
 } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import snippetService from '../services/snippetService';
-import workspaceService from '../services/workspaceService';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     snippets: 0,
-    workspaces: 0,
     publicSnippets: 0,
-    totalViews: 0
+    totalViews: 0,
+    totalLikes: 0
   });
   const [recentSnippets, setRecentSnippets] = useState([]);
-  const [recentWorkspaces, setRecentWorkspaces] = useState([]);
+  const [popularSnippets, setPopularSnippets] = useState([]);
+  const [trendingLanguages, setTrendingLanguages] = useState([]);
 
   useEffect(() => {
     loadDashboardData();
@@ -44,34 +46,50 @@ const Dashboard = () => {
       const snippetsResponse = await snippetService.getSnippets({ limit: 5 });
       setRecentSnippets(snippetsResponse.snippets || []);
       
-      // Load recent workspaces
-      const workspacesResponse = await workspaceService.getWorkspaces({ limit: 5 });
-      setRecentWorkspaces(workspacesResponse.workspaces || []);
+      // Load popular snippets
+      const popularResponse = await snippetService.getSnippets({ 
+        limit: 5, 
+        sortBy: 'views',
+        isPublic: true 
+      });
+      setPopularSnippets(popularResponse.snippets || []);
       
       // Calculate stats
       const snippets = snippetsResponse.snippets || [];
-      const workspaces = workspacesResponse.workspaces || [];
       
       const publicSnippets = snippets.filter(s => s.isPublic).length;
       const totalViews = snippets.reduce((sum, s) => sum + (s.views || 0), 0);
+      const totalLikes = snippets.reduce((sum, s) => sum + (s.likes?.length || 0), 0);
+      
+      // Calculate trending languages
+      const languageCount = {};
+      snippets.forEach(s => {
+        languageCount[s.language] = (languageCount[s.language] || 0) + 1;
+      });
+      const trending = Object.entries(languageCount)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 5)
+        .map(([lang, count]) => ({ language: lang, count }));
+      setTrendingLanguages(trending);
       
       setStats({
         snippets: snippetsResponse.total || 0,
-        workspaces: workspacesResponse.total || 0,
         publicSnippets,
-        totalViews
+        totalViews,
+        totalLikes
       });
       
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
       // Set empty arrays to prevent UI errors
       setRecentSnippets([]);
-      setRecentWorkspaces([]);
+      setPopularSnippets([]);
+      setTrendingLanguages([]);
       setStats({
         snippets: 0,
-        workspaces: 0,
         publicSnippets: 0,
-        totalViews: 0
+        totalViews: 0,
+        totalLikes: 0
       });
     } finally {
       setLoading(false);
@@ -136,18 +154,6 @@ const Dashboard = () => {
 
         <div className="card">
           <div className="flex items-center">
-            <div className="p-3 bg-green-500/20 rounded-lg">
-              <Users className="w-6 h-6 text-green-400" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-slate-400">Workspaces</p>
-              <p className="text-2xl font-bold text-white">{stats.workspaces}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="flex items-center">
             <div className="p-3 bg-purple-500/20 rounded-lg">
               <Globe className="w-6 h-6 text-purple-400" />
             </div>
@@ -169,10 +175,22 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
+        <div className="card">
+          <div className="flex items-center">
+            <div className="p-3 bg-pink-500/20 rounded-lg">
+              <Heart className="w-6 h-6 text-pink-400" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-slate-400">Total Likes</p>
+              <p className="text-2xl font-bold text-white">{stats.totalLikes}</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link
           to="/snippets/new"
           className="card hover:shadow-lg transition-shadow cursor-pointer group"
@@ -189,23 +207,38 @@ const Dashboard = () => {
         </Link>
 
         <Link
-          to="/workspaces"
+          to="/snippets?filter=public"
           className="card hover:shadow-lg transition-shadow cursor-pointer group"
         >
           <div className="flex items-center">
             <div className="p-4 bg-green-500/20 rounded-lg group-hover:bg-green-500/30 transition-colors">
-              <Plus className="w-8 h-8 text-green-400" />
+              <Globe className="w-8 h-8 text-green-400" />
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-semibold text-white">Create Workspace</h3>
-              <p className="text-slate-400">Start a collaborative project</p>
+              <h3 className="text-lg font-semibold text-white">Explore Public</h3>
+              <p className="text-slate-400">Browse community snippets</p>
+            </div>
+          </div>
+        </Link>
+
+        <Link
+          to="/snippets?filter=trending"
+          className="card hover:shadow-lg transition-shadow cursor-pointer group"
+        >
+          <div className="flex items-center">
+            <div className="p-4 bg-purple-500/20 rounded-lg group-hover:bg-purple-500/30 transition-colors">
+              <TrendingUp className="w-8 h-8 text-purple-400" />
+            </div>
+            <div className="ml-4">
+              <h3 className="text-lg font-semibold text-white">Trending</h3>
+              <p className="text-slate-400">Popular snippets this week</p>
             </div>
           </div>
         </Link>
       </div>
 
       {/* Recent Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Snippets */}
         <div className="card">
           <div className="card-header">
@@ -240,8 +273,8 @@ const Dashboard = () => {
                         {snippet.description || 'No description'}
                       </p>
                       <div className="flex items-center space-x-4 text-xs text-slate-500">
-                        <span className={`px-2 py-1 rounded-full ${getLanguageColor(snippet.language)}`}>
-                          {snippet.language}
+                        <span className={`px-2 py-1 rounded-full ${getLanguageColor(snippet.lang)}`}>
+                          {snippet.lang}
                         </span>
                         <span className="flex items-center">
                           <Clock className="w-3 h-3 mr-1" />
@@ -250,6 +283,10 @@ const Dashboard = () => {
                         <span className="flex items-center">
                           <Eye className="w-3 h-3 mr-1" />
                           {snippet.views}
+                        </span>
+                        <span className="flex items-center">
+                          <Heart className="w-3 h-3 mr-1" />
+                          {snippet.likes?.length || 0}
                         </span>
                         {snippet.isPublic ? (
                           <Globe className="w-3 h-3 text-green-400" />
@@ -276,16 +313,16 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Recent Workspaces */}
+        {/* Popular Snippets */}
         <div className="card">
           <div className="card-header">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold text-white flex items-center">
-                <Users className="w-5 h-5 mr-2" />
-                Recent Workspaces
+                <Star className="w-5 h-5 mr-2" />
+                Popular Snippets
               </h2>
               <Link
-                to="/workspaces"
+                to="/snippets?filter=popular"
                 className="text-blue-400 hover:text-blue-300 text-sm font-medium"
               >
                 View all
@@ -294,39 +331,37 @@ const Dashboard = () => {
           </div>
 
           <div className="space-y-4">
-            {recentWorkspaces.length > 0 ? (
-              recentWorkspaces.map((workspace) => (
+            {popularSnippets.length > 0 ? (
+              popularSnippets.map((snippet) => (
                 <Link
-                  key={workspace._id}
-                  to={`/workspaces/${workspace._id}`}
+                  key={snippet._id}
+                  to={`/snippets/${snippet._id}`}
                   className="block p-4 border border-slate-700 rounded-lg hover:border-blue-500/50 hover:shadow-sm transition-all bg-slate-800/50"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <h3 className="font-medium text-white mb-1">
-                        {workspace.name}
+                        {snippet.title}
                       </h3>
                       <p className="text-sm text-slate-400 mb-2 line-clamp-2">
-                        {workspace.description || 'No description'}
+                        {snippet.description || 'No description'}
                       </p>
                       <div className="flex items-center space-x-4 text-xs text-slate-500">
-                        <span className="flex items-center">
-                          <Users className="w-3 h-3 mr-1" />
-                          {workspace.members.length + 1} members
+                        <span className={`px-2 py-1 rounded-full ${getLanguageColor(snippet.lang)}`}>
+                          {snippet.lang}
                         </span>
                         <span className="flex items-center">
-                          <FileText className="w-3 h-3 mr-1" />
-                          {workspace.files?.length || 0} files
+                          <Eye className="w-3 h-3 mr-1" />
+                          {snippet.views}
+                        </span>
+                        <span className="flex items-center">
+                          <Heart className="w-3 h-3 mr-1" />
+                          {snippet.likes?.length || 0}
                         </span>
                         <span className="flex items-center">
                           <Clock className="w-3 h-3 mr-1" />
-                          {formatDate(workspace.createdAt)}
+                          {formatDate(snippet.createdAt)}
                         </span>
-                        {workspace.isPublic ? (
-                          <Globe className="w-3 h-3 text-green-400" />
-                        ) : (
-                          <Lock className="w-3 h-3 text-slate-500" />
-                        )}
                       </div>
                     </div>
                   </div>
@@ -334,14 +369,47 @@ const Dashboard = () => {
               ))
             ) : (
               <div className="text-center py-8">
-                <Users className="w-12 h-12 text-slate-500 mx-auto mb-4" />
-                <p className="text-slate-400">No workspaces yet</p>
+                <Star className="w-12 h-12 text-slate-500 mx-auto mb-4" />
+                <p className="text-slate-400">No popular snippets yet</p>
                 <Link
-                  to="/workspaces"
+                  to="/snippets?filter=public"
                   className="text-blue-400 hover:text-blue-300 text-sm font-medium"
                 >
-                  Create your first workspace
+                  Explore public snippets
                 </Link>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Trending Languages */}
+        <div className="card">
+          <div className="card-header">
+            <h2 className="text-xl font-semibold text-white flex items-center">
+              <TrendingUp className="w-5 h-5 mr-2" />
+              Trending Languages
+            </h2>
+          </div>
+
+          <div className="space-y-4">
+            {trendingLanguages.length > 0 ? (
+              trendingLanguages.map((item, index) => (
+                <div key={item.language} className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <span className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-xs font-bold text-white mr-3">
+                      {index + 1}
+                    </span>
+                    <span className={`px-2 py-1 rounded-full text-xs ${getLanguageColor(item.language)}`}>
+                      {item.language}
+                    </span>
+                  </div>
+                  <span className="text-slate-400 text-sm">{item.count} snippets</span>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8">
+                <TrendingUp className="w-12 h-12 text-slate-500 mx-auto mb-4" />
+                <p className="text-slate-400">No trending data yet</p>
               </div>
             )}
           </div>

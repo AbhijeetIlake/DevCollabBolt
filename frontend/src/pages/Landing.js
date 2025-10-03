@@ -34,15 +34,15 @@ const Landing = () => {
       color: "from-orange-500 to-red-500"
     },
     {
-      icon: Share2,
-      title: "Easy Sharing",
-      description: "Share code snippets with public links, collaborate on workspaces, and invite team members instantly.",
+      icon: Heart,
+      title: "Community Driven",
+      description: "Like, share, and discover amazing code snippets from developers around the world.",
       color: "from-indigo-500 to-purple-500"
     },
     {
       icon: Shield,
       title: "Secure & Private",
-      description: "JWT authentication, encrypted data, and granular privacy controls keep your code safe and secure.",
+      description: "JWT authentication, encrypted data, and privacy controls keep your snippets safe and secure.",
       color: "from-teal-500 to-blue-500"
     }
   ];

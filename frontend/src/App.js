@@ -108,11 +108,9 @@ function App() {
               path="/dashboard" 
               element={
                 <ProtectedRoute>
-                  <SocketProvider>
-                    <AppLayout>
-                      <Dashboard />
-                    </AppLayout>
-                  </SocketProvider>
+                  <AppLayout>
+                    <Dashboard />
+                  </AppLayout>
                 </ProtectedRoute>
               } 
             />
@@ -146,32 +144,6 @@ function App() {
                   <AppLayout>
                     <SnippetEditor />
                   </AppLayout>
-                </ProtectedRoute>
-              } 
-            />
-            
-            <Route 
-              path="/workspaces" 
-              element={
-                <ProtectedRoute>
-                  <SocketProvider>
-                    <AppLayout>
-                      <Workspaces />
-                    </AppLayout>
-                  </SocketProvider>
-                </ProtectedRoute>
-              } 
-            />
-            
-            <Route 
-              path="/workspaces/:id" 
-              element={
-                <ProtectedRoute>
-                  <SocketProvider>
-                    <AppLayout>
-                      <WorkspaceEditor />
-                    </AppLayout>
-                  </SocketProvider>
                 </ProtectedRoute>
               } 
             />

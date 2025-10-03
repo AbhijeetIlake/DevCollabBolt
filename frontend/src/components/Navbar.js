@@ -35,7 +35,6 @@ const Navbar = () => {
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: Home },
     { path: '/snippets', label: 'Snippets', icon: Code },
-    { path: '/workspaces', label: 'Workspaces', icon: Users },
   ];
 
   return (
