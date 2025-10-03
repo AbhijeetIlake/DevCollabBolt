@@ -5,24 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { 
-  Plus, 
-  Search, 
-  Filter,
-  Eye,
-  Heart,
-  Share2,
-  Lock,
-  Globe,
-  Clock,
-  Code,
-  Star,
-  TrendingUp,
-  Edit,
-  Trash2,
-  Copy,
-  Check
-} from 'lucide-react';
+import { Plus, Search, ListFilter as Filter, Eye, Heart, Share2, Lock, Globe, Clock, Code, Star, TrendingUp, CreditCard as Edit, Trash2, Copy, Check } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import snippetService from '../services/snippetService';
 
