@@ -21,12 +21,16 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     lowercase: true,
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
+    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,})+$/, 'Please enter a valid email'] // ✅ slightly more flexible regex
   },
   password: {
     type: String,
     required: [true, 'Password is required'],
     minlength: [6, 'Password must be at least 6 characters long']
+  },
+  avatar: {
+    type: String, // ✅ optional field for profile image (URL or filename)
+    default: null
   },
   createdAt: {
     type: Date,
@@ -44,9 +48,9 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('save', async function(next) {
   // Only hash the password if it has been modified (or is new)
   if (!this.isModified('password')) return next();
-  
+
   try {
-    // Hash password with cost of 12
+    // Hash password with cost factor 12
     const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
     next();
@@ -60,10 +64,11 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-// Method to get user info without password
+// Method to get user info without password (used in auth responses)
 userSchema.methods.toJSON = function() {
   const userObject = this.toObject();
   delete userObject.password;
+  delete userObject.__v;
   return userObject;
 };
 

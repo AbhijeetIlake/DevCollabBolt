@@ -21,15 +21,15 @@ const workspaceRoutes = require('./routes/workspaces');
 const authMiddleware = require('./middleware/auth');
 
 const app = express();
-app.set('trust proxy', 1); // or true
+app.set('trust proxy', 1);
 const server = http.createServer(app);
 
 // Socket.IO setup for real-time features
 const io = socketIo(server, {
   cors: {
-    origin: process.env.NODE_ENV === 'production' 
-      ? process.env.FRONTEND_URL 
-      : "http://localhost:3000",
+    origin: process.env.NODE_ENV === 'production'
+      ? process.env.FRONTEND_URL
+      : ["http://localhost:3000", "http://127.0.0.1:3000"],
     methods: ["GET", "POST"]
   }
 });
@@ -39,16 +39,16 @@ app.use(helmet());
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: 'Too many requests from this IP, please try again later.'
 });
 app.use(limiter);
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL 
+  origin: process.env.NODE_ENV === 'production'
+    ? process.env.FRONTEND_URL
     : ["http://localhost:3000", "http://127.0.0.1:3000"],
   credentials: true
 }));
@@ -74,20 +74,17 @@ mongoose.connect(process.env.MONGODB_URI, {
 io.on('connection', (socket) => {
   console.log('👤 User connected:', socket.id);
 
-  // Join workspace room for real-time collaboration
   socket.on('join-workspace', (workspaceId) => {
     socket.join(workspaceId);
     socket.to(workspaceId).emit('user-joined', socket.id);
     console.log(`👤 User ${socket.id} joined workspace ${workspaceId}`);
   });
 
-  // Leave workspace room
   socket.on('leave-workspace', (workspaceId) => {
     socket.leave(workspaceId);
     console.log(`👤 User ${socket.id} left workspace ${workspaceId}`);
   });
 
-  // Handle file locking
   socket.on('lock-file', (data) => {
     socket.to(data.workspaceId).emit('file-locked', {
       fileId: data.fileId,
@@ -97,7 +94,6 @@ io.on('connection', (socket) => {
     console.log(`🔒 File ${data.fileId} locked by ${data.username}`);
   });
 
-  // Handle file unlocking
   socket.on('unlock-file', (data) => {
     socket.to(data.workspaceId).emit('file-unlocked', {
       fileId: data.fileId,
@@ -106,8 +102,13 @@ io.on('connection', (socket) => {
     console.log(`🔓 File ${data.fileId} unlocked by user ${data.userId}`);
   });
 
-  // Handle disconnection
   socket.on('disconnect', () => {
+    for (const room of socket.rooms) {
+      if (room !== socket.id) {
+        socket.leave(room);
+        console.log(`👤 User ${socket.id} left room ${room} on disconnect`);
+      }
+    }
     console.log('👤 User disconnected:', socket.id);
   });
 });
@@ -118,19 +119,17 @@ app.set('io', io);
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/snippets', (req, res, next) => {
-  // Allow public access to shared snippets
   if (req.path.startsWith('/share/')) {
-    return next();
+    return next(); // allow public access
   }
-  // Require auth for all other snippet routes
-  return authMiddleware(req, res, next);
+  return authMiddleware(req, res, next); // require auth
 }, snippetRoutes);
 app.use('/api/workspaces', authMiddleware, workspaceRoutes);
 
-// Health check endpoint
+// Health check
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     message: 'DevCollab Backend is running!',
     timestamp: new Date().toISOString()
   });
@@ -138,7 +137,7 @@ app.get('/api/health', (req, res) => {
 
 // 404 handler
 app.use('*', (req, res) => {
-  res.status(404).json({ 
+  res.status(404).json({
     error: 'Route not found',
     message: 'The requested endpoint does not exist'
   });
@@ -147,7 +146,7 @@ app.use('*', (req, res) => {
 // Global error handler
 app.use((error, req, res, next) => {
   console.error('❌ Server Error:', error);
-  res.status(500).json({ 
+  res.status(500).json({
     error: 'Internal server error',
     message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
   });

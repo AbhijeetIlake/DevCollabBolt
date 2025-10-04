@@ -1,130 +1,120 @@
 /**
  * Workspace Model
- * Defines the collaborative workspace schema for MongoDB
+ * Represents collaborative coding workspaces with real-time file editing
  */
 
 const mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
 
+// File schema inside workspace
 const fileSchema = new mongoose.Schema({
-  id: {
-    type: String,
-    default: () => uuidv4()
-  },
   name: {
     type: String,
-    required: [true, 'File name is required'],
-    trim: true
+    required: true,
+    trim: true,
   },
   content: {
     type: String,
-    default: ''
+    default: '',
   },
   language: {
     type: String,
-    required: [true, 'Programming language is required'],
-    enum: [
-      'javascript', 'typescript', 'python', 'java', 'cpp', 'c', 'csharp',
-      'php', 'ruby', 'go', 'rust', 'swift', 'kotlin', 'html', 'css',
-      'sql', 'json', 'xml', 'yaml', 'markdown', 'shell', 'dockerfile'
-    ]
+    required: true,
+    trim: true,
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
+    required: true,
   }
-});
+}, { timestamps: true });
 
+// Collaborator schema
+const collaboratorSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  role: {
+    type: String,
+    enum: ['editor', 'viewer'],
+    default: 'editor',
+  }
+}, { timestamps: true });
 
+// Workspace schema
 const workspaceSchema = new mongoose.Schema({
   workspaceId: {
     type: String,
     default: () => uuidv4(),
     unique: true,
-    required: true
+    index: true,
   },
   name: {
     type: String,
-    required: [true, 'Workspace name is required'],
+    required: true,
     trim: true,
-    maxlength: [100, 'Workspace name cannot exceed 100 characters']
   },
   description: {
     type: String,
     trim: true,
-    maxlength: [500, 'Description cannot exceed 500 characters']
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
   },
-  collaborators: [{
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    },
-    joinedAt: {
-      type: Date,
-      default: Date.now
-    }
-  }],
+  collaborators: [collaboratorSchema],
   files: [fileSchema],
   inviteCode: {
     type: String,
     unique: true,
-    sparse: true
+  },
+  isPublic: {
+    type: Boolean,
+    default: false,
   }
-}, {
-  timestamps: true
-});
+}, { timestamps: true });
 
-workspaceSchema.index({ owner: 1, createdAt: -1 });
-workspaceSchema.index({ 'collaborators.user': 1 });
-workspaceSchema.index({ inviteCode: 1 });
-workspaceSchema.index({ workspaceId: 1 });
+/**
+ * Instance Methods
+ */
 
-workspaceSchema.methods.generateInviteCode = function() {
-  this.inviteCode = uuidv4().substring(0, 8).toUpperCase();
+// Generate unique invite code
+workspaceSchema.methods.generateInviteCode = function () {
+  this.inviteCode = uuidv4().slice(0, 8); // short code
 };
 
-workspaceSchema.methods.isCollaborator = function(userId) {
-  return this.collaborators.some(collab => collab.user.toString() === userId.toString()) ||
-         this.owner.toString() === userId.toString();
+// Check if user is a collaborator or owner
+workspaceSchema.methods.isCollaborator = function (userId) {
+  if (!userId) return false;
+  if (this.owner.toString() === userId.toString()) return true;
+  return this.collaborators.some(c => c.user.toString() === userId.toString());
 };
 
-workspaceSchema.methods.isOwner = function(userId) {
+// Check if user is the owner
+workspaceSchema.methods.isOwner = function (userId) {
+  if (!userId) return false;
   return this.owner.toString() === userId.toString();
 };
 
-workspaceSchema.methods.addCollaborator = function(userId) {
+// Add collaborator
+workspaceSchema.methods.addCollaborator = function (userId, role = 'editor') {
   if (!this.isCollaborator(userId)) {
-    this.collaborators.push({
-      user: userId
-    });
-    return true;
+    this.collaborators.push({ user: userId, role });
   }
-  return false;
 };
 
-workspaceSchema.methods.updateFile = function(fileId, content) {
-  const file = this.files.find(f => f.id === fileId);
+// Update file content
+workspaceSchema.methods.updateFile = function (fileId, content) {
+  const file = this.files.id(fileId);
   if (file) {
     file.content = content;
-    file.updatedAt = new Date();
-    return true;
   }
-  return false;
+  return file;
 };
 
-module.exports = mongoose.model('Workspace', workspaceSchema);
+const Workspace = mongoose.model('Workspace', workspaceSchema);
+
+module.exports = Workspace;
