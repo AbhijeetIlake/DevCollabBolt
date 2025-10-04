@@ -2,16 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import io from 'socket.io-client';
-import {
-  Plus,
-  Trash2,
-  Users,
-  Copy,
-  Check,
-  Save,
-  FileCode,
-  AlertCircle
-} from 'lucide-react';
+import { Plus, Trash2, Users, Copy, Check, Save, FileCode, CircleAlert as AlertCircle } from 'lucide-react';
 import CodeEditor from '../components/CodeEditor';
 import LoadingSpinner from '../components/LoadingSpinner';
 import workspaceService from '../services/workspaceService';

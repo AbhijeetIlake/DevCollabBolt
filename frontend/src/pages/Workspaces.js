@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import {
-  FolderOpen,
-  Plus,
-  Trash2,
-  Copy,
-  Users,
-  Clock,
-  FileCode,
-  Check,
-  AlertCircle
-} from 'lucide-react';
+import { FolderOpen, Plus, Trash2, Copy, Users, Clock, FileCode, Check, CircleAlert as AlertCircle } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import workspaceService from '../services/workspaceService';
 
