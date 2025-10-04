@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Code, FileText, Hop as Home, LogOut, User, Menu, X } from 'lucide-react';
+import { Code, FileText, Hop as Home, LogOut, User, Menu, X, FolderOpen } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -35,6 +35,7 @@ const Navbar = () => {
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: Home },
     { path: '/snippets', label: 'Snippets', icon: Code },
+    { path: '/workspaces', label: 'Workspaces', icon: FolderOpen },
   ];
 
   return (

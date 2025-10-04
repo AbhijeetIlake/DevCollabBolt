@@ -3,12 +3,9 @@
  * Handles routing and global state management
  */
 
-// import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-// import { SocketProvider } from './contexts/SocketContext';
 
-// Import pages
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -16,8 +13,8 @@ import Dashboard from './pages/Dashboard';
 import Snippets from './pages/Snippets';
 import SnippetEditor from './pages/SnippetEditor';
 import SharedSnippet from './pages/SharedSnippet';
-// import Workspaces from './pages/Workspaces';
-// import WorkspaceEditor from './pages/WorkspaceEditor';
+import Workspaces from './pages/Workspaces';
+import WorkspaceEditor from './pages/WorkspaceEditor';
 
 // Import components
 import Navbar from './components/Navbar';
@@ -137,18 +134,38 @@ function App() {
               } 
             />
             
-            <Route 
-              path="/snippets/:id" 
+            <Route
+              path="/snippets/:id"
               element={
                 <ProtectedRoute>
                   <AppLayout>
                     <SnippetEditor />
                   </AppLayout>
                 </ProtectedRoute>
-              } 
+              }
             />
-            
-            {/* Default redirect */}
+
+            <Route
+              path="/workspaces"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <Workspaces />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/workspaces/:workspaceId"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <WorkspaceEditor />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
             
             {/* 404 fallback */}
             <Route 
